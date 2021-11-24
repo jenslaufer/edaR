@@ -1,6 +1,6 @@
 Package: edaR
 Title: A library for Exploratory Data Analysis (EDA)
-Version: 0.0.0-Snapshot
+Version: 0.0.0
 Authors@R: 
     person(given = "Jens",
            family = "Laufer",
@@ -14,3 +14,11 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
+Imports:
+    tidyverse
+    glue
+    ggthemes
+    gridExtra
+    bbplot
+Remotes:
+    bbc/bbplot
