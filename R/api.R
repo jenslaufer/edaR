@@ -1,5 +1,12 @@
 
 
+.var_pairs <- function(data) {
+    expand_grid(source = data %>% colnames(),
+                target = data %>% colnames()) %>%
+        filter(source %>% as.character() < target %>% as.character())
+}
+
+
 features <- function(data) {
     data %>% colnames()
 }
@@ -31,7 +38,7 @@ quantitive_features <- function(data) {
 }
 
 
-summary <- function(data) {
+data_summary <- function(data) {
     data %>%
         summarise(
             `Number Of Variables` = data %>% features() %>% length(),
@@ -75,30 +82,6 @@ empty_values_plot <- function(data) {
     
     grid.arrange(plot1, plot2, nrow = 1)
 }
-
-
-univariatePlot <- function(data, variable) {
-    numeric <- data %>%
-        pull(!!sym(variable)) %>%
-        is.numeric()
-    
-    data
-    if (numeric) {
-        data %>%
-            ggplot(aes(x = !!sym(variable))) +
-            geom_histogram(fill = "#4e79a7")
-    } else {
-        data %>%
-            mutate(total = n()) %>%
-            group_by(!!sym(variable), total) %>%
-            summarise(n = n()) %>%
-            mutate(ratio = round(n / total * 100, 1) %>% format(1)) %>%
-            ggplot(aes(x = reorder(!!sym(variable), n), y = n)) +
-            geom_bar(fill = "#4e79a7", stat = "identity") +
-            geom_text(aes(label = "{ratio}%" %>% glue()), vjust = -0.25)
-    }
-}
-
 
 quantitive_plot <- function(data,
                             variable1,
@@ -321,6 +304,28 @@ quantitative_qualitative_plot <-
             plot
         }
     }
+
+univariate_plot <- function(data, variable) {
+    numeric <- data %>%
+        pull(!!sym(variable)) %>%
+        is.numeric()
+    
+    data
+    if (numeric) {
+        data %>%
+            ggplot(aes(x = !!sym(variable))) +
+            geom_histogram(fill = "#4e79a7")
+    } else {
+        data %>%
+            mutate(total = n()) %>%
+            group_by(!!sym(variable), total) %>%
+            summarise(n = n()) %>%
+            mutate(ratio = round(n / total * 100, 1) %>% format(1)) %>%
+            ggplot(aes(x = reorder(!!sym(variable), n), y = n)) +
+            geom_bar(fill = "#4e79a7", stat = "identity") +
+            geom_text(aes(label = "{ratio}%" %>% glue()), vjust = -0.25)
+    }
+}
 
 bivariatePlot <-
     function(data,
