@@ -374,7 +374,7 @@ bivariate_plot <-
                 quantitative_qualitative_plot(variable1, variable2)
         } else  if (!numeric1 && numeric2) {
             data %>%
-                quantitative_qualitative_plot(variable2, variable3)
+                quantitative_qualitative_plot(variable2, variable1)
         }
     }
 
