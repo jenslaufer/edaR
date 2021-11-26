@@ -1,6 +1,8 @@
 
 
 
+
+
 .var_pairs <- function(data) {
     expand_grid(source = data %>% colnames(),
                 target = data %>% colnames()) %>%
@@ -364,29 +366,20 @@ bivariate_plot <-
                 variable1Scale = variable1Scale,
                 variable2Scale = variable2Scale
             )
-        }
-        else if (!numeric1 && !numeric2) {
+        } else if (!numeric1 && !numeric2) {
             data %>%
                 qualitative_plot(variable1, variable2)
-        } else {
-            plot <- data %>%
-                ggplot(aes(
-                    x = !!sym(variable1),
-                    y = !!sym(variable2)
-                )) +
-                geom_boxplot()
-            if (numeric1) {
-                plot +
-                    scale_x_continuous(trans = variable1Scale)
-            } else if (numeric2) {
-                plot +
-                    scale_y_continuous(trans = variable2Scale)
-            }
+        } else  if (numeric1 && !numeric2) {
+            data %>%
+                quantitative_qualitative_plot(variable1, variable2)
+        } else  if (!numeric1 && numeric2) {
+            data %>%
+                quantitative_qualitative_plot(variable2, variable3)
         }
     }
 
 bivariate_plots <- function(data) {
     data %>%
         .var_pairs() %>%
-        map( ~ data %>% bivariate_plot(..1, ..2))
+        pmap( ~ data %>% bivariate_plot(..1, ..2))
 }
