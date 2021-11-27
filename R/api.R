@@ -1,8 +1,3 @@
-
-
-
-
-
 .var_pairs <- function(data) {
     expand_grid(source = data %>% colnames(),
                 target = data %>% colnames()) %>%
@@ -145,7 +140,8 @@ quantitive_plot <- function(data,
     
     
     plot +
-        geom_point()
+        geom_point() +
+        labs(title = "{variable1} vs {variable2} vs {variable3} vs {variable4}" %>% glue())
 }
 
 qualitative_plot <-
