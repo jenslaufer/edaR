@@ -140,8 +140,7 @@ quantitive_plot <- function(data,
     
     
     plot +
-        geom_point() +
-        labs(title = "{variable1} vs {variable2} vs {variable3} vs {variable4}" %>% glue())
+        geom_point()
 }
 
 qualitative_plot <-
