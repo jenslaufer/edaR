@@ -58,7 +58,7 @@ empty_values_plot <- function(data) {
         mutate(isEmpty = if_else(T, "Empty", "Filled")) %>%
         ggplot(aes(x = rownum, y = variable, fill = isEmpty)) +
         geom_raster() +
-        scale_fill_tableau() +
+        scale_fill_manual(values = c("Filled" = "#59A14F", "Empty" = "#E15759")) +
         bbc_style()
     
     plot2 <-
@@ -71,6 +71,7 @@ empty_values_plot <- function(data) {
         mutate(ratio = n / total,
                ratio_str = round(ratio * 100, 1) %>% format(1)) %>%
         mutate(label = if_else(ratio > .02, "{ratio_str}% ({n})" %>% glue(), "")) %>%
+        mutate(isEmpty = if_else(T, "Empty", "Filled")) %>%
         select(-total) %>%
         ggplot(aes(x = feature, y = ratio, fill = isNan)) +
         geom_bar(stat = "identity", position = "fill") +
@@ -222,7 +223,9 @@ qualitative_plot <-
             coord_flip() +
             scale_fill_tableau() +
             bbc_style() +
-            theme(axis.text.x = element_blank())
+            theme(axis.text.x = element_blank()) +
+            labs(title = title)
+        
         if (!(variable3 %>% is.null()) &&
             !(variable4 %>% is.null())) {
             plot +
