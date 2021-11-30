@@ -55,11 +55,12 @@ empty_values_plot <- function(data) {
         mutate(rownum = row_number()) %>%
         gather(-rownum, key = "variable", value = "value") %>%
         mutate(isEmpty = value %>% is.na()) %>%
-        mutate(isEmpty = if_else(T, "Empty", "Filled")) %>%
+        mutate(isEmpty = if_else(isEmpty, "Missing", "Filled")) %>%
         ggplot(aes(x = rownum, y = variable, fill = isEmpty)) +
         geom_raster() +
-        scale_fill_manual(values = c("Filled" = "#59A14F", "Empty" = "#E15759")) +
-        bbc_style()
+        scale_fill_manual(values = c("Filled" = "#59A14F", "Missing" = "#E15759")) +
+        bbc_style() +
+        labs(title = "Dataset Rows")
     
     plot2 <-
         data %>%
@@ -71,16 +72,22 @@ empty_values_plot <- function(data) {
         mutate(ratio = n / total,
                ratio_str = round(ratio * 100, 1) %>% format(1)) %>%
         mutate(label = if_else(ratio > .02, "{ratio_str}% ({n})" %>% glue(), "")) %>%
-        mutate(isEmpty = if_else(T, "Empty", "Filled")) %>%
+        mutate(isNan = if_else(isNan, "Missing", "Filled")) %>%
         select(-total) %>%
         ggplot(aes(x = feature, y = ratio, fill = isNan)) +
         geom_bar(stat = "identity", position = "fill") +
         geom_text(aes(label = label), position = position_stack(vjust = .5)) +
+        scale_fill_manual(values = c("Filled" = "#59A14F", "Missing" = "#E15759")) +
         coord_flip() +
-        scale_fill_manual(values = c("Filled" = "#59A14F", "Empty" = "#E15759")) +
-        bbc_style()
+        bbc_style() +
+        labs(title = "Percentage/Number")
     
-    grid.arrange(plot1, plot2, nrow = 1)
+    grid.arrange(plot1,
+                 plot2,
+                 nrow = 1,
+                 top = textGrob("Missing Values", gp = gpar(
+                     fontsize = 40, font = 2
+                 )))
 }
 
 quantitive_plot <- function(data,
@@ -154,11 +161,11 @@ qualitative_plot <-
         if (!(variable3 %>% is.null()) &&
             !(variable4 %>% is.null())) {
             data <- data %>%
-                group_by(!!sym(variable2),!!sym(variable3),!!sym(variable4))
+                group_by(!!sym(variable2), !!sym(variable3), !!sym(variable4))
         } else if (!(variable3 %>% is.null()) &&
                    variable4 %>% is.null()) {
             data <- data %>%
-                group_by(!!sym(variable2),!!sym(variable3))
+                group_by(!!sym(variable2), !!sym(variable3))
         } else if (!(variable2 %>% is.null()) &&
                    variable3 %>% is.null() &&
                    variable4 %>% is.null()) {
@@ -174,19 +181,24 @@ qualitative_plot <-
             !(variable4 %>% is.null())) {
             data <-
                 data %>% group_by(
-                    !!sym(variable1),!!sym(variable2),!!sym(variable3),!!sym(variable4),
+                    !!sym(variable1),
+                    !!sym(variable2),
+                    !!sym(variable3),
+                    !!sym(variable4),
                     total
                 )
         } else if (!(variable3 %>% is.null()) &&
                    variable4 %>% is.null()) {
             data <-
-                data %>% group_by(!!sym(variable1),!!sym(variable2),!!sym(variable3),
+                data %>% group_by(!!sym(variable1),
+                                  !!sym(variable2),
+                                  !!sym(variable3),
                                   total)
         } else if (!(variable2 %>% is.null()) &&
                    variable3 %>% is.null() &&
                    variable4 %>% is.null()) {
             data <-
-                data %>% group_by(!!sym(variable1),!!sym(variable2), total)
+                data %>% group_by(!!sym(variable1), !!sym(variable2), total)
         }
         
         
@@ -253,7 +265,9 @@ quantitative_qualitative_plot <-
             plot <- data %>%
                 ggplot(aes(
                     x = reorder_within(
-                        !!sym(qualitativeVariable1),!!sym(quantitiveVariable),!!sym(qualitativeVariable2),
+                        !!sym(qualitativeVariable1),
+                        !!sym(quantitiveVariable),
+                        !!sym(qualitativeVariable2),
                         fun = median
                     ),
                     y = !!sym(quantitiveVariable)
@@ -263,9 +277,11 @@ quantitative_qualitative_plot <-
             plot <- data %>%
                 ggplot(aes(
                     x = reorder_within(
-                        !!sym(qualitativeVariable1),!!sym(quantitiveVariable),
+                        !!sym(qualitativeVariable1),
+                        !!sym(quantitiveVariable),
                         list(
-                            !!sym(qualitativeVariable2),!!sym(qualitativeVariable3)
+                            !!sym(qualitativeVariable2),
+                            !!sym(qualitativeVariable3)
                         ),
                         fun = median
                     ),
@@ -275,7 +291,8 @@ quantitative_qualitative_plot <-
             plot <- data %>%
                 ggplot(aes(
                     x = reorder(
-                        !!sym(qualitativeVariable1),!!sym(quantitiveVariable),
+                        !!sym(qualitativeVariable1),
+                        !!sym(quantitiveVariable),
                         fun = median
                     ),
                     y = !!sym(quantitiveVariable)
@@ -332,7 +349,7 @@ univariate_plot <- function(data, variable) {
 univariate_plots <- function(data) {
     data %>%
         colnames() %>%
-        map(~ data %>% univariate_plot(..1))
+        map( ~ data %>% univariate_plot(..1))
 }
 
 bivariate_plot <-
@@ -370,5 +387,5 @@ bivariate_plot <-
 bivariate_plots <- function(data) {
     data %>%
         .var_pairs() %>%
-        pmap(~ data %>% bivariate_plot(..1, ..2))
+        pmap( ~ data %>% bivariate_plot(..1, ..2))
 }
