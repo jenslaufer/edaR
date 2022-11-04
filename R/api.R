@@ -62,9 +62,15 @@ quantitive_features <- function(data) {
     colnames()
 }
 
-rm_tukey_outliers <- function(data) {
+rm_tukey_outliers <- function(data, cols = NA) {
+  if (cols %>% is.na()) {
+    cols = data %>% colnames()
+  }
+  
+  
   data %>%
-    mutate(across(where(is.numeric), .is_outlier, .names = "{.col}_is_outlier")) %>%
+    mutate(across(where(~ is.numeric(.x) &&
+                          .x %in% cols), .is_outlier, .names = "{.col}_is_outlier")) %>%
     filter_at(vars(matches("_is_outlier$")), all_vars(. == F)) %>%
     select(!contains("is_outlier"))
 }
