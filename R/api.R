@@ -66,7 +66,6 @@ rm_tukey_outliers <- function(data, .cols = NA) {
   if (.cols %>% is.na()) {
     .cols = data %>% colnames()
   }
-  .cols %>%  print()
   
   data %>%
     mutate(across(where(is.numeric) &
