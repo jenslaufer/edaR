@@ -62,8 +62,8 @@ quantitive_features <- function(data) {
     colnames()
 }
 
-rm_tukey_outliers <- function(data, .cols = NA) {
-  if (.cols %>% is.na()) {
+rm_tukey_outliers <- function(data, .cols = NULL) {
+  if (.cols %>% is.null()) {
     .cols = data %>% colnames()
   }
   
