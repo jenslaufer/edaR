@@ -200,11 +200,11 @@ qualitative_plot <-
     if (!(variable3 %>% is.null()) &&
         !(variable4 %>% is.null())) {
       data <- data %>%
-        group_by(!!sym(variable2),!!sym(variable3),!!sym(variable4))
+        group_by(!!sym(variable2), !!sym(variable3), !!sym(variable4))
     } else if (!(variable3 %>% is.null()) &&
                variable4 %>% is.null()) {
       data <- data %>%
-        group_by(!!sym(variable2),!!sym(variable3))
+        group_by(!!sym(variable2), !!sym(variable3))
     } else if (!(variable2 %>% is.null()) &&
                variable3 %>% is.null() &&
                variable4 %>% is.null()) {
@@ -219,18 +219,23 @@ qualitative_plot <-
     if (!(variable3 %>% is.null()) &&
         !(variable4 %>% is.null())) {
       data <-
-        data %>% group_by(!!sym(variable1),!!sym(variable2),!!sym(variable3),!!sym(variable4),
+        data %>% group_by(!!sym(variable1),
+                          !!sym(variable2),
+                          !!sym(variable3),
+                          !!sym(variable4),
                           total)
     } else if (!(variable3 %>% is.null()) &&
                variable4 %>% is.null()) {
       data <-
-        data %>% group_by(!!sym(variable1),!!sym(variable2),!!sym(variable3),
+        data %>% group_by(!!sym(variable1),
+                          !!sym(variable2),
+                          !!sym(variable3),
                           total)
     } else if (!(variable2 %>% is.null()) &&
                variable3 %>% is.null() &&
                variable4 %>% is.null()) {
       data <-
-        data %>% group_by(!!sym(variable1),!!sym(variable2), total)
+        data %>% group_by(!!sym(variable1), !!sym(variable2), total)
     }
     
     
@@ -297,7 +302,9 @@ quantitative_qualitative_plot <-
       plot <- data %>%
         ggplot(aes(
           x = reorder_within(
-            !!sym(qualitativeVariable1),!!sym(quantitiveVariable),!!sym(qualitativeVariable2),
+            !!sym(qualitativeVariable1),
+            !!sym(quantitiveVariable),
+            !!sym(qualitativeVariable2),
             fun = median
           ),
           y = !!sym(quantitiveVariable)
@@ -307,9 +314,11 @@ quantitative_qualitative_plot <-
       plot <- data %>%
         ggplot(aes(
           x = reorder_within(
-            !!sym(qualitativeVariable1),!!sym(quantitiveVariable),
+            !!sym(qualitativeVariable1),
+            !!sym(quantitiveVariable),
             list(
-              !!sym(qualitativeVariable2),!!sym(qualitativeVariable3)
+              !!sym(qualitativeVariable2),
+              !!sym(qualitativeVariable3)
             ),
             fun = median
           ),
@@ -319,7 +328,8 @@ quantitative_qualitative_plot <-
       plot <- data %>%
         ggplot(aes(
           x = reorder(
-            !!sym(qualitativeVariable1),!!sym(quantitiveVariable),
+            !!sym(qualitativeVariable1),
+            !!sym(quantitiveVariable),
             fun = median
           ),
           y = !!sym(quantitiveVariable)
@@ -359,7 +369,9 @@ quantitative_qualitative_plot <-
     }
   }
 
-univariate_plot <- function(data, variable) {
+univariate_plot <- function(data, variable, outlier_treatment = NULL) {
+  data <- data %>% .outlier_handling(data, c(variable), outlier_treatment)
+  
   numeric <- data %>%
     pull(!!sym(variable)) %>%
     is.numeric()
@@ -384,10 +396,10 @@ univariate_plot <- function(data, variable) {
   }
 }
 
-univariate_plots <- function(data) {
+univariate_plots <- function(data, outlier_treatment = NULL) {
   data %>%
     colnames() %>%
-    map(~ data %>% univariate_plot(..1))
+    map( ~ data %>% univariate_plot(..1, outlier_treatment))
 }
 
 bivariate_plot <-
@@ -395,7 +407,11 @@ bivariate_plot <-
            variable1,
            variable2,
            variable1Scale = "identity",
-           variable2Scale = "identity") {
+           variable2Scale = "identity",
+           outlier_treatment = NULL) {
+    data <-
+      data %>% .outlier_handling(data, c(variable1, variable2), outlier_treatment)
+    
     numeric1 <- data %>%
       pull(!!sym(variable1)) %>%
       is.numeric()
@@ -420,8 +436,18 @@ bivariate_plot <-
     }
   }
 
-bivariate_plots <- function(data) {
+bivariate_plots <- function(data, outlier_treatment = NULL) {
   data %>%
     .var_pairs() %>%
-    pmap(~ data %>% bivariate_plot(..1, ..2))
+    pmap( ~ data %>% bivariate_plot(..1, ..2, outlier_treatment))
+}
+
+.outlier_handling(data, columns, outlier_treatment) {
+  if(outlier_treatment == "outlier_removed"){
+    data <- data %>% rm_tukey_outliers(columns)
+  } else {
+    data_without_outliers <- data %>% rm_tukey_outliers(columns)
+    data <- data %>% anti_join(data_without_outliers)
+  }
+  data
 }
