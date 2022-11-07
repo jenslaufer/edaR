@@ -360,7 +360,7 @@ quantitative_qualitative_plot <-
   }
 
 univariate_plot <-
-  function(data, variable, outlier_treatment = NULL) {
+  function(data, variable, outlier_treatment = "") {
     data <-
       data %>% .outlier_handling(data, c(variable), outlier_treatment)
     
@@ -388,7 +388,7 @@ univariate_plot <-
     }
   }
 
-univariate_plots <- function(data, outlier_treatment = NULL) {
+univariate_plots <- function(data, outlier_treatment = "") {
   data %>%
     colnames() %>%
     map(~ data %>% univariate_plot(..1, outlier_treatment))
@@ -400,7 +400,7 @@ bivariate_plot <-
            variable2,
            variable1Scale = "identity",
            variable2Scale = "identity",
-           outlier_treatment = NULL) {
+           outlier_treatment = "") {
     data <-
       data %>% .outlier_handling(data, c(variable1, variable2), outlier_treatment)
     
@@ -428,7 +428,7 @@ bivariate_plot <-
     }
   }
 
-bivariate_plots <- function(data, outlier_treatment = NULL) {
+bivariate_plots <- function(data, outlier_treatment = "") {
   data %>%
     .var_pairs() %>%
     pmap(~ data %>% bivariate_plot(..1, ..2, outlier_treatment))
