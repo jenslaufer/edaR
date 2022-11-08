@@ -442,7 +442,7 @@ bivariate_plots <- function(data, outlier_treatment = "all") {
     pmap( ~ data %>% bivariate_plot(..1, ..2, outlier_treatment))
 }
 
-.outlier_handling <- function(data, columns, outlier_treatment) {
+.outlier_handling <- function(data, columns, outlier_treatment = "all") {
   if (outlier_treatment == "outlier_remove") {
     data <- data %>% rm_tukey_outliers(columns)
   } else if (outlier_treatment == "outlier_only") {
