@@ -371,6 +371,7 @@ quantitative_qualitative_plot <-
 
 univariate_plot <-
   function(data, variable, outlier_treatment = NULL) {
+    "univariate_plot: {outlier_treatment}" %>% glue() %>% print()
     data <-
       data %>% .outlier_handling(data, c(variable), outlier_treatment)
     
@@ -399,6 +400,7 @@ univariate_plot <-
   }
 
 univariate_plots <- function(data, outlier_treatment = NULL) {
+  "univariate_plots: {outlier_treatment}" %>% glue() %>% print()
   data %>%
     colnames() %>%
     map( ~ data %>% univariate_plot(..1, outlier_treatment))
@@ -444,7 +446,8 @@ bivariate_plots <- function(data, outlier_treatment = NULL) {
     pmap( ~ data %>% bivariate_plot(..1, ..2, outlier_treatment))
 }
 
-.outlier_handling <- function(data, columns, outlier_treatment) {
+.outlier_handling <- function(data, columns, outlier_treatment = NULL) {
+  ".outlier_handling: {outlier_treatment}" %>% glue() %>% print()
   if (outlier_treatment == "outlier_removed") {
     data <- data %>% rm_tukey_outliers(columns)
   } else if (outlier_treatment == "outlier_only") {
