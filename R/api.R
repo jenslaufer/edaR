@@ -444,7 +444,7 @@ bivariate_plots <- function(data, outlier_treatment = NULL) {
 
 .outlier_handling <- function(data, columns, outlier_treatment) {
   ".outlier_treatment: {outlier_treatment}" %>% glue() %>% print()
-  if (outlier_treatment == "outlier_removed") {
+  if (outlier_treatment == "outlier_remove") {
     data <- data %>% rm_tukey_outliers(columns)
   } else if (outlier_treatment == "outlier_only") {
     data_without_outliers <- data %>% rm_tukey_outliers(columns)
