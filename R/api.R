@@ -196,7 +196,7 @@ quantitive_plot <- function(data,
   plot +
     geom_point() +
     bbplot::bbc_style() +
-    labs(title = .title(variable1, variable2, variable3, variable4, outlier_treatment))
+    labs(title = .title(variable1, variable2, variable3, variable4, outlier_treatment = outlier_treatment))
 }
 
 qualitative_plot <-
@@ -277,7 +277,7 @@ qualitative_plot <-
       scale_fill_tableau() +
       bbc_style() +
       theme(axis.text.x = element_blank()) +
-      labs(title = .title(variable1, variable2, variable3, variable4, outlier_treatment))
+      labs(title = .title(variable1, variable2, variable3, variable4, outlier_treatment = outlier_treatment))
     
     if (!(variable3 %>% is.null()) &&
         !(variable4 %>% is.null())) {
@@ -348,7 +348,7 @@ quantitative_qualitative_plot <-
           qualitativeVariable1,
           qualitativeVariable2,
           qualitativeVariable3,
-          outlier_treatment
+          outlier_treatment = outlier_treatment
         )
       )
     
