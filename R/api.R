@@ -452,7 +452,9 @@ bivariate_plots <- function(data, outlier_treatment = "all") {
       bivariate_plot(
         ..1,
         ..2,
-        outlier_treatment = outlier_treatment
+        variable1Scale,
+        variable2Scale,
+        outlier_treatment
       ))
 }
 
