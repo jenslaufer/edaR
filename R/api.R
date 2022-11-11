@@ -405,7 +405,7 @@ quantitative_qualitative_plot <-
   }
 
 univariate_plot <-
-  function(data, variable) {
+  function(data, variable, outlier_treatment = "all") {
     data <- data %>% .outlier_handling(c(variable), outlier_treatment)
     
     numeric <- data %>%
