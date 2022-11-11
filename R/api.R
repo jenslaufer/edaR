@@ -10,7 +10,8 @@
            variable3 = NULL,
            variable4 = NULL,
            variable5 = NULL,
-           outlier_treatment = "all") {
+           outlier_treatment = 'all') {
+    outlier_treatment %>% print()
     outlier_treatment_title <- ""
     if (outlier_treatment == "outlier_remove") {
       outlier_treatment_title <- "(Outlier Removed)"
@@ -18,6 +19,8 @@
     else if (outlier_treatment == "outlier_only") {
       outlier_treatment_title <- "(Outlier Only)"
     }
+    
+    outlier_treatment_title %>% print()
     
     title <- "{variable1} vs. {variable2}" %>% glue(.null = "")
     
