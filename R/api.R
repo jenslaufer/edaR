@@ -148,7 +148,7 @@ quantitive_plot <- function(data,
                             variable2Scale = "identity",
                             variable3Scale = "identity",
                             variable4Scale = "identity",
-                            outlier_treatment = "all") {
+                            outlier_treatment) {
   if (variable3 %>% is.null() && variable4 %>% is.null()) {
     plot <- data %>%
       ggplot(aes(
@@ -403,7 +403,7 @@ univariate_plot <-
 univariate_plots <- function(data, outlier_treatment = "all") {
   data %>%
     colnames() %>%
-    map( ~ data %>% univariate_plot(..1, outlier_treatment))
+    map( ~ data %>% univariate_plot(..1, outlier_treatment = outlier_treatment))
 }
 
 bivariate_plot <-
