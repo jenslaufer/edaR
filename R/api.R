@@ -10,7 +10,7 @@
            variable3 = NULL,
            variable4 = NULL,
            variable5 = NULL,
-           outlier_treatment = 'all') {
+           outlier_treatment) {
     outlier_treatment %>% print()
     outlier_treatment_title <- ""
     if (outlier_treatment == "outlier_remove") {
@@ -208,7 +208,7 @@ qualitative_plot <-
            variable2 = NULL,
            variable3 = NULL,
            variable4 = NULL,
-           outlier_treatment = "all") {
+           outlier_treatment) {
     if (!(variable3 %>% is.null()) &&
         !(variable4 %>% is.null())) {
       data <- data %>%
@@ -303,7 +303,7 @@ quantitative_qualitative_plot <-
            qualitativeVariable2 = NULL,
            qualitativeVariable3 = NULL,
            quantitiveVariableScale = "identity",
-           outlier_treatment = "all") {
+           outlier_treatment) {
     if (!(qualitativeVariable2 %>% is.null()) &
         qualitativeVariable3 %>% is.null()) {
       plot <- data %>%
@@ -373,7 +373,7 @@ quantitative_qualitative_plot <-
   }
 
 univariate_plot <-
-  function(data, variable, outlier_treatment = "all") {
+  function(data, variable) {
     data <- data %>% .outlier_handling(c(variable), outlier_treatment)
     
     numeric <- data %>%
@@ -412,7 +412,7 @@ bivariate_plot <-
            variable2,
            variable1Scale = "identity",
            variable2Scale = "identity",
-           outlier_treatment = "all") {
+           outlier_treatment) {
     data <-
       data %>% .outlier_handling(c(variable1, variable2), outlier_treatment)
     
@@ -452,7 +452,7 @@ bivariate_plots <- function(data, outlier_treatment = "all") {
 }
 
 .outlier_handling <-
-  function(data, columns, outlier_treatment = "all") {
+  function(data, columns, outlier_treatment) {
     if (outlier_treatment == "outlier_remove") {
       data <- data %>% rm_tukey_outliers(columns)
     } else if (outlier_treatment == "outlier_only") {
