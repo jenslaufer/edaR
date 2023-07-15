@@ -428,7 +428,8 @@ univariate_plot <-
         geom_bar(fill = "#4e79a7", stat = "identity") +
         geom_text(aes(label = "{ratio}%" %>% glue()), vjust = -0.25) +
         bbplot::bbc_style() +
-        labs(title =  .single_var_title(variable, outlier_treatment))
+        labs(title =  .single_var_title(variable, outlier_treatment)) %>%
+        coord_flip()
     }
   }
 
