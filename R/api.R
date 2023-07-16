@@ -426,8 +426,9 @@ univariate_plot <-
         mutate(ratio = round(n / total * 100, 1) %>% format(1)) %>%
         ggplot(aes(x = reorder(!!sym(variable), n), y = n)) +
         geom_bar(fill = "#4e79a7", stat = "identity") +
-        geom_text(aes(label = "{ratio}%" %>% glue()), vjust = -0.25) +
+        geom_text(aes(label = "{ratio}%" %>% glue()), hjust = 1.2, color = "white", size = 5) +
         bbplot::bbc_style() +
+
         labs(title =  .single_var_title(variable, outlier_treatment)) +
         coord_flip()
     }
